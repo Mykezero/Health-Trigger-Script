@@ -30,7 +30,6 @@ _addon.name = 'HST'
 _addon.author = 'Mykezero'
 _addon.version = '1.0.0.0'
 _addon.command = 'hst'
-_addon.commands = {'set'}
 _addon.language = 'english'
 
 require('luau')
@@ -43,36 +42,43 @@ defaults.script = "default.txt"
 defaults.runonce = true
 defaults.hasrun = false
 
--- Events
-
 ---------------------------------------------------------------------------------------------------
 -- func: addon command
 -- desc:
 ---------------------------------------------------------------------------------------------------
 windower.register_event('addon command',function(...)
 	-- Parse arguments
-	args = powerargs({...})
+	args = {...}
 
-	if args.has_parameters then
-		defaults.threshold = args.parameters[1]
-		defaults.script = args.parameters[2]
-		print("Threshold Trigger: " .. defaults.threshold .. " Script: " .. defaults.script)
+	print(#args)
+
+	if (#args >= 1) then
+		defaults.threshold = args[1]
+		print("Threshold Trigger: " .. defaults.threshold)
+	end
+
+	if (#args >= 2) then
+		defaults.script = args[2]
+		print("Script: " .. defaults.script)
+	end
+
+	if (#args >= 3) then
+		defaults.runonce = boolify(args[3])
+		print("Run Once: " .. args[3])
 	end
 end)
 
 ---------------------------------------------------------------------------------------------------
--- func: load
--- desc:
+-- func: boolify
+-- desc: string to bool
 ---------------------------------------------------------------------------------------------------
-windower.register_event('load', function()
-	windower.send_command('bind f1 lua load hst')
-	windower.send_command('bind f2 lua unload hst')
-	windower.send_command('bind f3 hst 50 default.txt')
-end)
+function boolify(message)
+	return (message == 'true') and true or false
+end
 
 ---------------------------------------------------------------------------------------------------
--- func: load
--- desc:
+-- func: target change
+-- desc: reset hasrun on changed target.
 ---------------------------------------------------------------------------------------------------
 windower.register_event('target change', function(index)
 	defaults.hasrun = false
@@ -95,31 +101,3 @@ windower.register_event('prerender', function()
 		end
 	end
 end)
-
----------------------------------------------------------------------------------------------------
--- func: PowerArgs
--- desc: Provides relevant information about command arguements
----------------------------------------------------------------------------------------------------
-function powerargs(eargs)
-    -- store parameters
-    params = { }
-    for index = 1, #eargs do table.insert(params, eargs[index]) end
-
-    -- contains argument info
-    local arg_info =
-    {
-        parameters = params,
-        -- arg  count
-        count = #eargs,
-        -- the command or nil
-        command = (#eargs < 1) and nil or eargs[1],
-        -- args contains a command
-        has_command = #eargs >= 1,
-        -- commands has paramter(s)
-        has_parameters = #eargs >= 2,
-        -- number of parameters
-        parameter_count = #eargs - 1
-    }
-
-    return arg_info
-end
