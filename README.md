@@ -2,8 +2,8 @@
 Trigger a windower script based on the targets health percentage. By using scripts, 
 the addon can issue multiple commands to the game with a simple and easy to use syntax. 
 
-### Liscense
-This addon uses the BSD liscense so that it may eventually be included in Windower's addons repository. 
+### License
+This addon uses the BSD license so that it may eventually be included in Windower's addons repository. 
 
 ### Requirements
 This addon uses the Windower-Lua API so you'll need a working copy of Windower installed on your computer. 
